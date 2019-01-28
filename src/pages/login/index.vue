@@ -1,12 +1,12 @@
 <template>
     <div class="container" @click="clickHandle">
         <div class="author-wrapper">
-            <button
-                class="author-btn"
-                open-type="getUserInfo"
-                @getuserinfo="bindGetUserInfo"
-                @click="getUserInfo"
-            >点击开始猜谜！</button>
+            <div>
+                <img class="userinfo-avatar" src="/static/images/unlog_avatar.jpg">
+                <button class="author-btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo">
+                    授权
+                </button>
+            </div>
             <!-- <button open-type="getUserInfo" @getuserinfo="getUserInfo">登录</button> -->
         </div>
     </div>
@@ -69,56 +69,15 @@ export default {
                 }
             });
         }
-        // bindGetUserInfo(e) {
-        //     // console.log(e.mp.detail.rawData)
-        //     if (e.mp.detail.rawData) {
-        //         //用户按了允许授权按钮
-        //         console.log("用户按了允许授权按钮");
-        //     } else {
-        //         //用户按了拒绝按钮
-        //         console.log("用户按了拒绝按钮");
-        //     }
-        // },
-        // login() {
-        //     console.log("触发");
-        //     qcloud.setLoginUrl(config.loginUrl);
-        //     const session = qcloud.Session.get();
-        //     console.log(session);
-        //     if (session) {
-        //         // 第二次登录
-        //         // 或者本地已经有登录态
-        //         // 可使用本函数更新登录态
-        //         qcloud.loginWithCode({
-        //             success: res => {
-        //                 this.setData({ userInfo: res, logged: true });
-        //                 console.log(res);
-        //             },
-        //             fail: err => {
-        //                 console.error("222", err);
-        //             }
-        //         });
-        //     } else {
-        //         // 首次登录
-        //         qcloud.login({
-        //             success: res => {
-        //                 this.setData({ userInfo: res, logged: true });
-        //             },
-        //             fail: err => {
-        //                 console.log(err);
-        //             }
-        //         });
-        //     }
 
-        //     });
-        // }
     }
 };
 </script>
 <style>
 /* 头像 */
 .userinfo-avatar {
-    width: 128rpx;
-    height: 128rpx;
+    width: 256rpx;
+    height: 256rpx;
     margin: 20rpx;
     /* 在App.vue中统一定义 */
     /* border-radius:50%; */
@@ -140,7 +99,7 @@ export default {
     border-radius: 5px;
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
-    color: #eee;
+    color: #fff;
     background-color: #e42424;
 }
 .author-wrapper {
