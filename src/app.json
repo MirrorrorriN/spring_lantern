@@ -3,38 +3,6 @@
     "pages/index/main",
     "pages/login/main"
   ],
-  "tabBar": {
-      "backgroundColor": "#fafafa",
-      "borderStyle": "white",
-      "selectedColor": "#b4282d",
-      "color": "#666",
-      "list": [
-          {
-              "pagePath": "pages/index/main",
-              "iconPath": "static/images/ic_menu_choice_pressed.png",
-              "selectedIconPath": "static/images/ic_menu_choice_pressed.png",
-              "text": "首页"
-          },
-          {
-              "pagePath": "pages/index/main",
-              "iconPath": "static/images/ic_menu_choice_pressed.png",
-              "selectedIconPath": "static/images/ic_menu_choice_pressed.png",
-              "text": "灯谜"
-          },
-          {
-              "pagePath": "pages/index/main",
-              "iconPath": "static/images/ic_menu_choice_pressed.png",
-              "selectedIconPath": "static/images/ic_menu_choice_pressed.png",
-              "text": "飞花令"
-          },
-          {
-              "pagePath": "pages/index/main",
-              "iconPath": "static/images/ic_menu_choice_pressed.png",
-              "selectedIconPath": "static/images/ic_menu_choice_pressed.png",
-              "text": "排行榜"
-            }
-          ]
-  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
