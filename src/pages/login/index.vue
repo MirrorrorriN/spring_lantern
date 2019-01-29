@@ -3,9 +3,12 @@
         <div class="author-wrapper">
             <div>
                 <img class="userinfo-avatar" src="/static/images/unlog_avatar.jpg">
-                <button class="author-btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo">
-                    授权
-                </button>
+                <button
+                    class="author-btn"
+                    open-type="getUserInfo"
+                    @getuserinfo="bindGetUserInfo"
+                    @click="getUserInfo"
+                >授权</button>
             </div>
             <!-- <button open-type="getUserInfo" @getuserinfo="getUserInfo">登录</button> -->
         </div>
@@ -24,14 +27,18 @@ export default {
             if (e.mp.detail.rawData) {
                 //用户按了允许授权按钮
                 console.log("用户按了允许授权按钮");
-                console.log("111", e.mp.detail.userInfo);
-                wx.setStorageSync("userInfo", e.mp.detail.userInfo);
+                const userInfo = e.mp.detail.userInfo;
+                console.log("111", userInfo);
+                wx.setStorageSync("userInfo", userInfo);
+                const openid = wx.getStorageSync("openid");
                 // 使用navigateTo只能调转到非tabBar的页面
-                // wx.navigateTo({
-                //     url: "/pages/index/main"
-                // });
+                wx.navigateTo({
+                    url: "/pages/index/main"
+                });
                 // 如果在tabBar中要注册跳转的页面，可使用wx.switchTab,wx.navigateBack()（注意区别）
-                wx.navigateBack();
+                // wx.navigateBack({
+                    
+                // });
                 console.log("after bind userInfo");
             } else {
                 //用户按了拒绝按钮
@@ -59,17 +66,16 @@ export default {
                         //         code: res.code
                         //     }
                         // });
-                        var wxResp = get("/user/getOpenId", { code: res.code });
-                        if (wxResp.openid) {
-                            this.openid = wxResp.openid;
-                        }
+                        get("/user/getOpenId", { code: res.code }).then(res => {
+                            wx.setStorageSync("openid", res.data);
+                            console.log("wxResp:", res.data);
+                        });
                     } else {
                         console.log("获取用户登录态失败！" + res.errMsg);
                     }
                 }
             });
         }
-
     }
 };
 </script>
