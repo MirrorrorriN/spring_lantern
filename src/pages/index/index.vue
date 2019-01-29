@@ -13,9 +13,9 @@
                 <!-- <img class="userinfo-avatar" src="/static/images/unlog_avatar.jpg" v-else> -->
                 <span>{{userInfo.nickName}}</span>
             </div>
-            <div>已答{{correctCount}}题</div>
+            <div>猜中{{correctCount}}条</div>
         </div>
-        <div class="pop-container">
+        <div class="pop-container" v-if="showRiddle">
             <div class="question">
                 <!-- <img src="/static/images/lace.jpeg" mode="widthFix"> -->
                 <div>{{riddle}}</div>
@@ -25,20 +25,34 @@
             <div class="answer">
                 <!-- <input type="text" confirm-type="search" v-model="answer" placeholder="请输入谜底" @confirm="confirm($event)" v-on:input="watchAnswer"> -->
                 <input
+                    v-if="correct==0"
                     type="text"
                     confirm-type="done"
                     v-model="userAnswer"
-                    placeholder="请输入谜底"
+                    placeholder="猜猜看"
                     @confirm="confirm()"
                 >
                 <!-- <button class="confirm-btn" @click="handleClick">太简单了！提交~</button> -->
+                <div v-else-if="correct==1">答对了</div>
+                <div v-else>不对哦~再想想</div>
             </div>
+        </div>
+        <div class="pop-container" v-else>
+            <div class="web-font">点击灯笼</div>
+            <div class="web-font">抽取灯谜</div>
         </div>
     </div>
 </template>
 
+<script type="text/javascript" src="http://cdn.webfont.youziku.com/wwwroot/js/wf/youziku.api.min.js"></script>
+<script type="text/javascript">
+   $youziku.load(".pop-container", "af65e8d4f6f7452494205fe1cb9e4577", "CTWeiBeiSJ");
+   /*$youziku.load("#id1,.class1,h1", "af65e8d4f6f7452494205fe1cb9e4577", "CTWeiBeiSJ");*/
+   /*．．．*/
+   $youziku.draw();
+</script>
 <script>
-import { get, getStorageOpenid } from "../../utils/wx-request";
+import { get, getStorageOpenid, post } from "../../utils/wx-request";
 import { toLogin, login } from "../../utils";
 export default {
     data() {
@@ -51,8 +65,26 @@ export default {
             userAnswer: "",
             userInfo: wx.getStorageSync("userInfo"),
             correctCount: 0,
-            openid: wx.getStorageSync("openid")
+            openid: wx.getStorageSync("openid"),
+            correct: 0
         };
+    },
+
+    onload(){
+        wx.loadFontFace({
+          family: 'webfont',
+          source: 'url("//at.alicdn.com/t/webfont_mjy7t30ao5.eot")',
+        //   source: 'url("//down.izihun.com/font/font/488/font/font.ttf?e=1548768793&token=VD7rjRLQpyBmrGT1RTx31HKU9_CMCYnZXpSBHHUq:RlOsQ0jz-duHqVn-z3TR62JJdr8=&attname=%E5%AD%97%E9%AD%8224%E5%8F%B7-%E9%95%87%E9%AD%82%E6%89%8B%E4%B9%A6.ttf&v=1548764383")'
+          success: function (res) {
+              console.log(res.status) //  loaded
+          },
+          fail: function (res) {
+              console.log(res.status) //  error
+          },
+          complete: function (res) {
+              console.log(res.status);
+          }
+      });
     },
 
     mounted() {
@@ -62,7 +94,6 @@ export default {
         }
         var _this = this;
         get("/user/correctCount", { openid: this.openid }).then(res => {
-            console.log("correctCount" + res.data);
             this.correctCount = res.data;
         });
         this.userInfo = wx.getStorageSync("userInfo");
@@ -79,13 +110,20 @@ export default {
             this.riddle = data.data.question;
             this.hint = data.data.hint;
             this.showRiddle = true;
+            this.correct = 0;
+            this.answer = "";
             console.log(this.riddle);
         },
-        confirm() {
+        async confirm() {
             var _this = this;
             var userAnswer = this.userAnswer;
-            const data = post("/riddle/verify", { answer: userAnswer });
-            console.log(this.userAnswer);
+            const res = await get("/riddle/verify", { answer: userAnswer });
+            if (res != null && res.data == true) {
+                this.correct = 1;
+            } else {
+                this.correct = 2;
+            }
+            console.log("correct:" + res.data);
         }
     }
 };
@@ -97,7 +135,7 @@ div .box {
 }
 
 div.box img {
-    width: 77%;
+    width: 70%;
     margin-top: 30px;
 }
 
@@ -110,6 +148,13 @@ div.box img {
 .pop-container {
     text-align: center;
     padding: 0;
+    font-family:"webfont" !important;
+    font-size:16px;
+    font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+    color:#333;
 }
 
 .pop-container > div {
@@ -147,5 +192,15 @@ div .userinfo-bar {
     height: 32rpx;
     /* 在App.vue中统一定义 */
     /* border-radius:50%; */
+}
+
+/* 字体 */
+.web-font{
+    font-family:"webfont" !important;
+    font-size:16px;font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+    color:#333;
 }
 </style>

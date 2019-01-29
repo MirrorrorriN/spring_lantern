@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------请求的封装
-const host = 'https://localhost:9007/spring/';
+const host = 'https://www.magicding.com/dingjing/spring/';
 export {
   host
 }
