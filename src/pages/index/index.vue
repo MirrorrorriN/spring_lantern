@@ -2,7 +2,7 @@
     <div class="container">
         <!-- <div class="message">{{msg}}</div> -->
         <div class="box">
-            <img src="/static/images/lantern.png" mode="widthFix" @click="getSingleRiddle">
+            <img src="/static/images/lantern.png" mode="widthFix">
         </div>
         <!-- <div class="pop-container" v-if="showRiddle">
         {{riddle}}
@@ -11,9 +11,15 @@
             <div>
                 <img class="userinfo-avatar" :src="userInfo.avatarUrl">
                 <!-- <img class="userinfo-avatar" src="/static/images/unlog_avatar.jpg" v-else> -->
+            </div>
+            <div>
                 <span>{{userInfo.nickName}}</span>
             </div>
-            <div>猜中{{correctCount}}条</div>
+            <div style="color:#f03232;">猜中{{correctCount}}条</div>
+        </div>
+        <div class="riddle-bar" v-if="correct!=0||!showRiddle">
+             <div v-if="correct===0&&!showRiddle" @click="getSingleRiddle">点击抽取</div>
+            <div v-else-if="correct===1||correct===2" @click="getSingleRiddle">再抽一条</div>
         </div>
         <div class="pop-container" v-if="showRiddle">
             <div class="question">
@@ -31,26 +37,19 @@
                     v-model="userAnswer"
                     placeholder="猜猜看"
                     @confirm="confirm()"
+                    class="answer-input"
                 >
                 <!-- <button class="confirm-btn" @click="handleClick">太简单了！提交~</button> -->
-                <div v-else-if="correct==1">答对了</div>
-                <div v-else>不对哦~再想想</div>
+                <div class="scroll" v-else-if="correct==1">
+                    <div>答对了!</div>
+                    <div>{{explanation}}</div>
+                </div>
+                <div class="scroll" v-else>不对哦~再试试</div>
             </div>
-        </div>
-        <div class="pop-container" v-else>
-            <div class="web-font">点击灯笼</div>
-            <div class="web-font">抽取灯谜</div>
         </div>
     </div>
 </template>
 
-<script type="text/javascript" src="http://cdn.webfont.youziku.com/wwwroot/js/wf/youziku.api.min.js"></script>
-<script type="text/javascript">
-   $youziku.load(".pop-container", "af65e8d4f6f7452494205fe1cb9e4577", "CTWeiBeiSJ");
-   /*$youziku.load("#id1,.class1,h1", "af65e8d4f6f7452494205fe1cb9e4577", "CTWeiBeiSJ");*/
-   /*．．．*/
-   $youziku.draw();
-</script>
 <script>
 import { get, getStorageOpenid, post } from "../../utils/wx-request";
 import { toLogin, login } from "../../utils";
@@ -66,7 +65,8 @@ export default {
             userInfo: wx.getStorageSync("userInfo"),
             correctCount: 0,
             openid: wx.getStorageSync("openid"),
-            correct: 0
+            correct: 0,
+            explanation:""
         };
     },
 
@@ -111,7 +111,9 @@ export default {
             this.hint = data.data.hint;
             this.showRiddle = true;
             this.correct = 0;
-            this.answer = "";
+            this.userAnswer = "";
+            // 待删除在确认时再赋值
+            this.explanation=data.data.explanation;
             console.log(this.riddle);
         },
         async confirm() {
@@ -120,9 +122,11 @@ export default {
             const res = await get("/riddle/verify", { answer: userAnswer });
             if (res != null && res.data == true) {
                 this.correct = 1;
+                this.correctCount+=1;
             } else {
                 this.correct = 2;
             }
+            this.userAnswer = "";
             console.log("correct:" + res.data);
         }
     }
@@ -136,7 +140,7 @@ div .box {
 
 div.box img {
     width: 70%;
-    margin-top: 30px;
+    margin-top: 2px;
 }
 
 .message {
@@ -147,14 +151,13 @@ div.box img {
 
 .pop-container {
     text-align: center;
-    padding: 0;
-    font-family:"webfont" !important;
-    font-size:16px;
-    font-style:normal;
-    -webkit-font-smoothing: antialiased;
-    -webkit-text-stroke-width: 0.2px;
-    -moz-osx-font-smoothing: grayscale;
-    color:#333;
+    margin: 0 28px;
+    min-height: 20%;
+    border-style:double;
+    border-color: #f03232;
+    border-radius: 0.5em;
+    border-width: 7px;
+    padding:5px;
 }
 
 .pop-container > div {
@@ -175,7 +178,7 @@ input {
     text-align: center;
     width: 70%;
     border: none;
-    background-color: red;
+    background-color: #f03232;
     color: #eee;
 }
 
@@ -186,10 +189,26 @@ div .userinfo-bar {
     font-size: 14px;
 }
 
+div .riddle-bar {
+    position: absolute;
+    top: 20%;
+    left:46%;
+    right: 46%;
+    padding: 6px;
+    border:#f03232;
+    border-radius: 0.5em;
+    background-color: #f03232;
+    color:burlywood;
+}
+
+div .question{
+    color:#f03232;
+}
+
 /* 头像 */
 .userinfo-avatar {
-    width: 32rpx;
-    height: 32rpx;
+    width: 64rpx;
+    height: 64rpx;
     /* 在App.vue中统一定义 */
     /* border-radius:50%; */
 }
@@ -203,4 +222,13 @@ div .userinfo-bar {
     -moz-osx-font-smoothing: grayscale;
     color:#333;
 }
+
+.answer-input{
+    border:1px,solid,#f03232;
+}
+
+.scroll{
+    margin: 5px 0 0 0;
+}
+
 </style>
