@@ -12,14 +12,15 @@
                 <img class="userinfo-avatar" :src="userInfo.avatarUrl">
                 <!-- <img class="userinfo-avatar" src="/static/images/unlog_avatar.jpg" v-else> -->
             </div>
-            <div>
+            <!-- <div>
                 <span>{{userInfo.nickName}}</span>
-            </div>
-            <div style="color:#f03232;">猜中{{correctCount}}条</div>
+            </div> -->
+            <div class="user-bar">猜中{{correctCount}}条</div>
         </div>
-        <div class="riddle-bar" v-if="correct!=0||!showRiddle">
-             <div v-if="correct===0&&!showRiddle" @click="getSingleRiddle">点击抽取</div>
+        <div class="riddle-bar">
+            <div v-if="correct===0&&!showRiddle" @click="getSingleRiddle">点击抽取</div>
             <div v-else-if="correct===1||correct===2" @click="getSingleRiddle">再抽一条</div>
+            <div v-else @click="getSingleRiddle">跳过本条</div>
         </div>
         <div class="pop-container" v-if="showRiddle">
             <div class="question">
@@ -58,6 +59,7 @@ export default {
         return {
             msg: "Hello",
             riddle: "日出北京城",
+            riddleId: 0,
             hint: "",
             showRiddle: false,
             answer: "",
@@ -106,9 +108,11 @@ export default {
         },
         async getSingleRiddle() {
             var _this = this;
-            const data = await get("/riddle/single", {});
+            const openid = wx.getStorageSync("openid");
+            const data = await get("/riddle/single", {openid:openid});
             this.riddle = data.data.question;
             this.hint = data.data.hint;
+            this.riddleId = data.data.id;
             this.showRiddle = true;
             this.correct = 0;
             this.userAnswer = "";
@@ -119,7 +123,9 @@ export default {
         async confirm() {
             var _this = this;
             var userAnswer = this.userAnswer;
-            const res = await get("/riddle/verify", { answer: userAnswer });
+            var riddleId = this.riddleId;
+            const openid = wx.getStorageSync("openid");
+            const res = await get("/riddle/verify", { answer: userAnswer,riddleId:riddleId,openid:openid });
             if (res != null && res.data == true) {
                 this.correct = 1;
                 this.correctCount+=1;
@@ -182,6 +188,15 @@ input {
     color: #eee;
 }
 
+.user-bar{
+    color:#eee;
+    background-color: #f03232;
+    border-radius: 0.1em;
+    font-weight: lighter;
+    margin-right: 5px;
+    padding: 2px 5px;
+}
+
 div .userinfo-bar {
     position: absolute;
     top: 20%;
@@ -191,7 +206,7 @@ div .userinfo-bar {
 
 div .riddle-bar {
     position: absolute;
-    top: 20%;
+    top: 19%;
     left:46%;
     right: 46%;
     padding: 6px;
