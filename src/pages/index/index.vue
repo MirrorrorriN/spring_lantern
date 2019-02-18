@@ -2,7 +2,7 @@
     <div class="container">
         <!-- <div class="message">{{msg}}</div> -->
         <div class="bgm-btn">
-            <img class="note-pic" src="http://thyrsi.com/t6/672/1550507455x2890174321.png" @click=revertBgm()>
+            <img class="note-pic" src="http://thyrsi.com/t6/672/1550508077x2728278692.png" @click=revertBgm()>
         </div>
         <div class="box">
             <img src="/static/images/lantern.png" mode="widthFix">
