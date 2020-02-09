@@ -33,6 +33,6 @@ page {
     /* background-size:cover; */
     /* background-image:url(http://thyrsi.com/t6/664/1548750094x2890202498.jpg); */
     /* background-image:url(http://thyrsi.com/t6/664/1548750264x2890202498.jpg); */
-    background-image: url(http://thyrsi.com/t6/664/1548759691x2890203049.png);
+    background-image: url(https://mirrorrorrin.com/static/img/anagrams/lantern_riddle_bg.jpeg);
 }
 </style>

@@ -1,8 +1,5 @@
 <template>
     <div class="container" @click="clickHandle">
-        <div class="bgm-btn">
-            <img class="note-pic" src="http://thyrsi.com/t6/672/1550506004x2890174315.png" @click=revertBgm()>
-        </div>
         <div class="author-wrapper">
             <div>
                 <img class="userinfo-avatar" src="/static/images/unlog_avatar.jpg">

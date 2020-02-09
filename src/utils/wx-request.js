@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------请求的封装
-const host = 'https://www.magicding.com/dingjing/spring/';
+const host = 'https://mirrorrorrin.com/anagrams/spring';
 export {
   host
 }
